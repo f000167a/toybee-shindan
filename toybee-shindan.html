@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>toybeeファン診断</title>
+<meta name="description" content="今のあなたにぴったりのtoybeeソング。2つの質問に答えて、あなたにおすすめの1曲を見つけよう！">
+<meta property="og:title" content="toybeeファン診断">
+<meta property="og:description" content="今のあなたにぴったりのtoybeeソング">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Bowlby+One+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  --yellow: #FFD814;
+  --yellow-light: #FFF3B0;
+  --yellow-glow: #FFE55C;
+  --black: #1A1A1A;
+  --black-soft: #2D2D2D;
+  --white: #FFFEF5;
+  --gray: #888;
+  --accent: #FF6B35;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* ===== BACKGROUND PATTERN ===== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,216,20,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255,216,20,0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== HEXAGON BG PATTERN ===== */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52' viewBox='0 0 60 52'%3E%3Cpath d='M30 0L60 15v22L30 52 0 37V15z' fill='none' stroke='%23FFD814' stroke-opacity='0.04' stroke-width='1'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 2rem 1.25rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.screen.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes stripe {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* ===== LANDING ===== */
+.landing-bee {
+  font-size: 4rem;
+  animation: float 2s ease-in-out infinite;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 0 20px rgba(255,216,20,0.3));
+}
+
+.landing-title {
+  font-family: 'Bowlby One SC', sans-serif;
+  font-size: clamp(2.2rem, 8vw, 3.5rem);
+  color: var(--yellow);
+  text-shadow: 
+    3px 3px 0 var(--black-soft),
+    0 0 40px rgba(255,216,20,0.3);
+  letter-spacing: 0.02em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.landing-sub {
+  font-size: 1.05rem;
+  color: var(--yellow-light);
+  margin-top: 0.75rem;
+  text-align: center;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.landing-desc {
+  font-size: 0.85rem;
+  color: var(--gray);
+  margin-top: 1.5rem;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ===== BUTTONS ===== */
+.btn-start {
+  margin-top: 2.5rem;
+  padding: 1rem 3rem;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--black);
+  background: var(--yellow);
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 0 #C4A600,
+    0 6px 20px rgba(255,216,20,0.3);
+}
+
+.btn-start:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 #C4A600,
+    0 8px 30px rgba(255,216,20,0.4);
+}
+
+.btn-start:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 #C4A600,
+    0 3px 10px rgba(255,216,20,0.2);
+}
+
+.btn-start::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-start:hover::after {
+  left: 100%;
+}
+
+/* ===== QUESTION SCREENS ===== */
+.q-number {
+  font-family: 'Bowlby One SC', sans-serif;
+  font-size: 0.9rem;
+  color: var(--yellow);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.q-progress {
+  width: 120px;
+  height: 4px;
+  background: var(--black-soft);
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.q-progress-bar {
+  height: 100%;
+  background: var(--yellow);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.q-title {
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 2rem;
+  line-height: 1.4;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 360px;
+}
+
+.choice-btn {
+  padding: 1.1rem 1.5rem;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--white);
+  background: var(--black-soft);
+  border: 2px solid rgba(255,216,20,0.15);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.choice-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,216,20,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.choice-btn:hover {
+  border-color: var(--yellow);
+  transform: translateX(6px);
+  background: rgba(255,216,20,0.1);
+}
+
+.choice-btn:hover::before {
+  opacity: 1;
+}
+
+.choice-btn:active {
+  transform: scale(0.97);
+}
+
+/* ===== RESULT SCREEN ===== */
+#result-screen {
+  justify-content: flex-start;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--yellow);
+  color: var(--black);
+  font-size: 0.8rem;
+  font-weight: 900;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  margin-bottom: 1.25rem;
+  animation: bounceIn 0.6s ease-out;
+}
+
+.result-song-name {
+  font-family: 'Bowlby One SC', sans-serif;
+  font-size: clamp(1.3rem, 5vw, 1.8rem);
+  color: var(--yellow);
+  text-align: center;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 30px rgba(255,216,20,0.2);
+}
+
+.result-comment-box {
+  background: rgba(255,216,20,0.06);
+  border: 1px solid rgba(255,216,20,0.15);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0 1.5rem;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+}
+
+.result-comment-box::before {
+  content: '🐝';
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  font-size: 1.2rem;
+}
+
+.result-comment-line1 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--yellow-light);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.result-comment-line2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.6;
+}
+
+/* ===== VIDEO EMBED ===== */
+.video-container {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  background: var(--black-soft);
+}
+
+.video-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-container.shorts {
+  aspect-ratio: 9/16;
+  max-width: 240px;
+  max-height: 420px;
+}
+
+.video-coming-soon {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  background: var(--black-soft);
+  border: 2px dashed rgba(255,216,20,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--gray);
+}
+
+/* ===== CTA BUTTONS ===== */
+.cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.cta-live {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 1.2rem 1.5rem;
+  background: var(--yellow);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 0 #C4A600;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-live::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgba(0,0,0,0.03) 8px,
+    rgba(0,0,0,0.03) 16px
+  );
+}
+
+.cta-live:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #C4A600, 0 8px 20px rgba(255,216,20,0.2);
+}
+
+.cta-live-lead {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--yellow-light);
+  opacity: 0.8;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.cta-live-divider {
+  width: 40px;
+  height: 2px;
+  background: var(--black);
+  opacity: 0.15;
+  position: relative;
+  margin: 0.2rem 0;
+}
+
+.cta-live-main {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--black);
+  position: relative;
+}
+
+.cta-live-date {
+  font-family: 'Bowlby One SC', sans-serif;
+  font-size: 0.95rem;
+  color: var(--black);
+  opacity: 0.8;
+  position: relative;
+}
+
+.cta-live-venue {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--black);
+  opacity: 0.6;
+  position: relative;
+}
+
+.cta-live-catch {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--black);
+  opacity: 0.6;
+  position: relative;
+  margin-top: 0.1rem;
+}
+
+.cta-live-arrow {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--black);
+  opacity: 0.8;
+  position: relative;
+  margin-top: 0.2rem;
+}
+
+.cta-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--yellow);
+  background: transparent;
+  border: 2px solid rgba(255,216,20,0.3);
+  border-radius: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.cta-secondary:hover {
+  border-color: var(--yellow);
+  background: rgba(255,216,20,0.08);
+}
+
+.cta-tertiary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--gray);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.cta-tertiary:hover { color: var(--white); }
+
+/* ===== FOOTER ===== */
+.footer {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,216,20,0.1);
+  text-align: center;
+}
+
+.footer-disclaimer {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.25);
+  line-height: 1.5;
+}
+
+/* ===== SHARED TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--yellow);
+  color: var(--black);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  z-index: 100;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LANDING ===== -->
+<div id="landing" class="screen active">
+  <div class="landing-bee">🐝</div>
+  <h1 class="landing-title">toybee<br>ファン診断</h1>
+  <p class="landing-sub">今のあなたにぴったりのtoybeeソングを診断します。</p>
+  <button class="btn-start" onclick="showScreen('q1')">はじめる</button>
+</div>
+
+<!-- ===== Q1 ===== -->
+<div id="q1" class="screen">
+  <div class="q-number">Question 1 / 2</div>
+  <div class="q-progress"><div class="q-progress-bar" style="width:50%"></div></div>
+  <h2 class="q-title">今何してる？</h2>
+  <div class="choices">
+    <button class="choice-btn" onclick="selectQ1(0)">💼 仕事・勉強中</button>
+    <button class="choice-btn" onclick="selectQ1(1)">🚃 移動中</button>
+    <button class="choice-btn" onclick="selectQ1(2)">🫠 サボり中</button>
+    <button class="choice-btn" onclick="selectQ1(3)">☕ まったり中</button>
+  </div>
+</div>
+
+<!-- ===== Q2 ===== -->
+<div id="q2" class="screen">
+  <div class="q-number">Question 2 / 2</div>
+  <div class="q-progress"><div class="q-progress-bar" style="width:100%"></div></div>
+  <h2 class="q-title">どんな気分？</h2>
+  <div class="choices">
+    <button class="choice-btn" onclick="selectQ2(0)">🎵 楽しくなりたい！</button>
+    <button class="choice-btn" onclick="selectQ2(1)">🔥 ガンバるぞ！</button>
+    <button class="choice-btn" onclick="selectQ2(2)">🌙 しんみり沁みたい</button>
+    <button class="choice-btn" onclick="selectQ2(3)">🤪 あほになりたい</button>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div id="result-screen" class="screen">
+  <div class="result-badge">🐝 あなたへのおすすめ</div>
+  <div class="result-song-name" id="result-song"></div>
+  <div class="result-comment-box">
+    <div class="result-comment-line1" id="result-line1"></div>
+    <div class="result-comment-line2" id="result-line2"></div>
+  </div>
+  <div id="video-area"></div>
+  <div class="cta-group">
+    <p class="cta-live-lead">この曲が気になったあなたへ 🐝</p>
+    <a class="cta-live" href="https://www.liquidroom.net/schedule/toybee_20260322" target="_blank" rel="noopener">
+      <span class="cta-live-main">toybeeワンマンライブ開催！</span>
+      <span class="cta-live-date">2026.3.22 SUN</span>
+      <span class="cta-live-venue">＠恵比寿LIQUIDROOM</span>
+      <span class="cta-live-arrow">→ チェックする</span>
+    </a>
+    <button class="cta-secondary" id="cta-share" onclick="shareOnX()">
+      𝕏 結果をシェア
+    </button>
+    <button class="cta-tertiary" onclick="retry()">
+      🔄 他の気分も試す？
+    </button>
+  </div>
+  <div class="footer">
+    <div class="footer-disclaimer">
+      ※ 非公式ファンサイトです。toybee公式・関係者への本サイトに関するお問い合わせはご遠慮ください。<br>
+      ご意見・ご質問は <a href="https://x.com/inaken816" target="_blank" rel="noopener" style="color:var(--yellow-light);opacity:0.7">@inaken816</a> (X) / <a href="mailto:f000167a@yahoo.co.jp" style="color:var(--yellow-light);opacity:0.7">メール</a> まで
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">シェア画面を開きました！</div>
+
+<script>
+// ===== DATA =====
+const SITUATIONS = ['仕事・勉強中', '移動中', 'サボり中', 'まったり中'];
+const MOODS = ['楽しくなりたい！', 'ガンバるぞ！', 'しんみり沁みたい', 'あほになりたい'];
+
+const MATRIX = [
+  // [曲名, YouTube ID, 動画タイプ(mv/shorts/none), linkco.re, コメント1行目, コメント2行目]
+  // 💼 仕事・勉強中
+  [
+    ['TOYROCK -TOYBEEのテーマ-', '', 'none', 'vdbMnTFZ',
+     '仕事・勉強中で楽しくなりたいあなたには、「TOYROCK -TOYBEEのテーマ-」がおすすめ！',
+     'ノリノリで、パパッと残りを片付けちゃおう！'],
+    ['シモキタ・モーニング・ブルース', 'dRhY5Q0VGCA', 'shorts', 'vdbMnTFZ',
+     '仕事・勉強中でガンバりたいあなたには、「シモキタ・モーニング・ブルース」がおすすめ！',
+     'これを聴いて、もうひと頑張りだ！！'],
+    ['LOOKBACK', 'Wzz05DNQLws', 'mv', 'vVX5arU0',
+     '仕事・勉強中でしんみり沁みたいあなたには、「LOOKBACK」がおすすめ！',
+     'ちょっと一息ついて、自分の頑張りを見直してみよう！'],
+    ['あほんだらいふ', 'VjIvbjMe3W0', 'mv', 'xy3VVm2n',
+     '仕事・勉強中であほになりたいあなたには、「あほんだらいふ」がおすすめ！',
+     '少し気分転換して、頭空っぽにしてみませんか？']
+  ],
+  // 🚃 移動中
+  [
+    ['ライド・アンド・ライブ', '', 'none', 'X5Pq74NB',
+     '移動中で楽しくなりたいあなたには、「ライド・アンド・ライブ」がおすすめ！',
+     'でも、ノリすぎて乗り越しには注意！'],
+    ['フロムアンダーランド', 'W7VTpOs9UfQ', 'mv', 'VD6ZD7cq',
+     '移動中でガンバりたいあなたには、「フロムアンダーランド」がおすすめ！',
+     'アンダーランドから抜け出して、新しい世界にGO！'],
+    ['Flight Music', 'caswX1TeiN8', 'mv', 'xy3VVm2n',
+     '移動中でしんみり沁みたいあなたには、「Flight Music」がおすすめ！',
+     'フライト時には、シートベルトをお締めください。'],
+    ['あほんだらいふ', 'VjIvbjMe3W0', 'mv', 'xy3VVm2n',
+     '移動中であほになりたいあなたには、「あほんだらいふ」がおすすめ！',
+     'あほになって、楽しく生きよう！']
+  ],
+  // 🫠 サボり中
+  [
+    ['ワンタイムラヴァー', 'xjYI2NZpa1o', 'shorts', 'VD6ZD7cq',
+     'サボり中で楽しくなりたいあなたには、「ワンタイムラヴァー」がおすすめ！',
+     'ノリノリで踊っちゃえば、楽しくなってくるよ！'],
+    ['それゆけ!夢みるゾンビーズ!!', 'oHXRd-iyOz8', 'mv', 'xy3VVm2n',
+     'サボり中でガンバりたいあなたには、「それゆけ!夢みるゾンビーズ!!」がおすすめ！',
+     'このままゾンビのままじゃ終わらないぞ！'],
+    ['風知らぬひと', '4cjbydaUoy4', 'mv', 'VD6ZD7cq',
+     'サボり中でしんみり沁みたいあなたには、「風知らぬひと」がおすすめ！',
+     '沁みる歌声に、少しだけ浸ってみよう。。'],
+    ['あほんだらいふ', 'VjIvbjMe3W0', 'mv', 'xy3VVm2n',
+     'サボり中であほになりたいあなたには、「あほんだらいふ」がおすすめ！',
+     'もうちょっとだけ、待っていて欲しいんだ〜']
+  ],
+  // ☕ まったり中
+  [
+    ['道化師のラブソング', 'sSPcFSVpNw0', 'mv', 'mM3aCqtf',
+     'まったり中で楽しくなりたいあなたには、「道化師のラブソング」がおすすめ！',
+     'ギターの旋律に聴き惚れろ！'],
+    ['全米は泣かない', 'gEjyKlgWKHw', 'shorts', 'xy3VVm2n',
+     'まったり中でガンバりたいあなたには、「全米は泣かない」がおすすめ！',
+     '全米は泣かなくても、これはあなたの物語！'],
+    ['ハナマル', 'INhfrOC7e10', 'shorts', 'XPShXTs9',
+     'まったり中でしんみり沁みたいあなたには、「ハナマル」がおすすめ！',
+     '私から満点ハナマルあげちゃいます！'],
+    ['あほんだらいふ', 'VjIvbjMe3W0', 'mv', 'xy3VVm2n',
+     'まったり中であほになりたいあなたには、「あほんだらいふ」がおすすめ！',
+     'いつまでも夏休みって感じで！']
+  ]
+];
+
+// ===== STATE =====
+let q1Answer = -1;
+let currentSong = '';
+
+// ===== NAVIGATION =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  target.classList.add('active');
+  window.scrollTo(0, 0);
+  // Re-trigger animation
+  target.style.animation = 'none';
+  target.offsetHeight; // reflow
+  target.style.animation = '';
+}
+
+function selectQ1(idx) {
+  q1Answer = idx;
+  showScreen('q2');
+}
+
+function selectQ2(idx) {
+  const data = MATRIX[q1Answer][idx];
+  currentSong = data[0];
+
+  // Song name
+  document.getElementById('result-song').textContent = '「' + data[0] + '」';
+
+  // Comments
+  document.getElementById('result-line1').textContent = data[4];
+  document.getElementById('result-line2').textContent = data[5];
+
+  // Video
+  const videoArea = document.getElementById('video-area');
+  if (data[2] === 'mv') {
+    videoArea.innerHTML = '<div class="video-container"><iframe src="https://www.youtube.com/embed/' + data[1] + '?rel=0" allowfullscreen loading="lazy"></iframe></div>';
+  } else if (data[2] === 'shorts') {
+    videoArea.innerHTML = '<div class="video-container shorts"><iframe src="https://www.youtube.com/embed/' + data[1] + '?rel=0" allowfullscreen loading="lazy"></iframe></div>';
+  } else {
+    videoArea.innerHTML = '<div class="video-coming-soon">🎬 MV 近日公開予定</div>';
+  }
+
+  showScreen('result-screen');
+}
+
+function retry() {
+  q1Answer = -1;
+  currentSong = '';
+  showScreen('q1');
+}
+
+// ===== SHARE =====
+function shareOnX() {
+  const siteUrl = window.location.href;
+  const text = encodeURIComponent(
+    '【toybeeファン診断】\nわたしへのおすすめは「' + currentSong + '」でした！\n\nみんなもやってみて🐝\n' + siteUrl + '\n#toybeeファン診断'
+  );
+  window.open('https://x.com/intent/tweet?text=' + text, '_blank');
+  showToast();
+}
+
+function showToast() {
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+</script>
+
+</body>
+</html>
