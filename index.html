@@ -141,6 +141,7 @@ body::after {
   color: rgba(255,255,255,0.25);
   margin-top: 1.5rem;
   text-align: center;
+  line-height: 1.5;
 }
 
 /* ===== BUTTONS ===== */
@@ -666,7 +667,7 @@ const MATRIX = [
   // [曲名, YouTube ID, 動画タイプ(mv/shorts/none), linkco.re, コメント1行目, コメント2行目]
   // 💼 仕事・勉強中
   [
-    ['TOYROCK -TOYBEEのテーマ-', '', 'none', 'vdbMnTFZ',
+    ['TOYROCK -TOYBEEのテーマ-', 'oVn0amuiVdo', 'shorts', 'vdbMnTFZ',
      '仕事・勉強中で楽しくなりたいあなたには、「TOYROCK -TOYBEEのテーマ-」がおすすめ！',
      'ノリノリで、パパッと片付けちゃおう！'],
     ['シモキタ・モーニング・ブルース', 'dRhY5Q0VGCA', 'shorts', 'vdbMnTFZ',
@@ -681,7 +682,7 @@ const MATRIX = [
   ],
   // 🚃 移動中
   [
-    ['ライド・アンド・ライブ', '', 'none', 'X5Pq74NB',
+    ['ライド・アンド・ライブ', 'XLqQtzjMniE', 'shorts', 'X5Pq74NB',
      '移動中で楽しくなりたいあなたには、「ライド・アンド・ライブ」がおすすめ！',
      'でも、ノリすぎて乗り越しには注意！'],
     ['フロムアンダーランド', 'W7VTpOs9UfQ', 'mv', 'VD6ZD7cq',
@@ -729,6 +730,8 @@ const MATRIX = [
 // ===== STATE =====
 let q1Answer = -1;
 let currentSong = '';
+let currentVideoId = '';
+let currentVideoType = '';
 
 // ===== NAVIGATION =====
 function showScreen(id) {
@@ -736,9 +739,8 @@ function showScreen(id) {
   const target = document.getElementById(id);
   target.classList.add('active');
   window.scrollTo(0, 0);
-  // Re-trigger animation
   target.style.animation = 'none';
-  target.offsetHeight; // reflow
+  target.offsetHeight;
   target.style.animation = '';
 }
 
@@ -750,15 +752,13 @@ function selectQ1(idx) {
 function selectQ2(idx) {
   const data = MATRIX[q1Answer][idx];
   currentSong = data[0];
+  currentVideoId = data[1];
+  currentVideoType = data[2];
 
-  // Song name
   document.getElementById('result-song').textContent = '「' + data[0] + '」';
-
-  // Comments
   document.getElementById('result-line1').textContent = data[4];
   document.getElementById('result-line2').textContent = data[5];
 
-  // Video
   const videoArea = document.getElementById('video-area');
   if (data[2] === 'mv') {
     videoArea.innerHTML = '<div class="video-container"><iframe src="https://www.youtube.com/embed/' + data[1] + '?rel=0" allowfullscreen loading="lazy"></iframe></div>';
@@ -774,16 +774,28 @@ function selectQ2(idx) {
 function retry() {
   q1Answer = -1;
   currentSong = '';
+  currentVideoId = '';
+  currentVideoType = '';
   showScreen('q1');
 }
 
 // ===== SHARE =====
+function getYouTubeUrl() {
+  if (!currentVideoId) return '';
+  if (currentVideoType === 'shorts') {
+    return 'https://www.youtube.com/shorts/' + currentVideoId;
+  }
+  return 'https://www.youtube.com/watch?v=' + currentVideoId;
+}
+
 function shareOnX() {
   const siteUrl = window.location.href;
-  const text = encodeURIComponent(
-    '【toybeeファン診断】\nわたしへのおすすめは「' + currentSong + '」でした！\n\nみんなもやってみて🐝\n' + siteUrl + '\n#toybeeファン診断'
-  );
-  window.open('https://x.com/intent/tweet?text=' + text, '_blank');
+  const ytUrl = getYouTubeUrl();
+  let body = '【toybeeファン診断】\nわたしへのおすすめは「' + currentSong + '」でした！\n\nみんなもやってみて🐝\n' + siteUrl + '\n#toybeeファン診断';
+  if (ytUrl) {
+    body += '\n' + ytUrl;
+  }
+  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(body), '_blank');
   showToast();
 }
 
