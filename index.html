@@ -427,6 +427,13 @@ body::after {
   opacity: 0.8;
   text-align: center;
   margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+#countdown {
+  font-weight: 900;
+  color: var(--yellow);
+  font-size: 0.9rem;
 }
 
 .cta-live-divider {
@@ -609,7 +616,7 @@ body::after {
   </div>
   <div id="video-area"></div>
   <div class="cta-group">
-    <p class="cta-live-lead">この曲が気になったあなたへ 🐝</p>
+    <p class="cta-live-lead">この曲が気になったあなたへ 🐝<br><span id="countdown"></span></p>
     <a class="cta-live" href="https://www.liquidroom.net/schedule/toybee_20260322" target="_blank" rel="noopener">
       <span class="cta-live-main">toybeeワンマンライブ開催！</span>
       <span class="cta-live-date">2026.3.22 SUN</span>
@@ -635,6 +642,22 @@ body::after {
 <div class="toast" id="toast">シェア画面を開きました！</div>
 
 <script>
+// ===== COUNTDOWN =====
+function updateCountdown() {
+  const live = new Date('2026-03-22T00:00:00+09:00');
+  const now = new Date();
+  const diff = Math.ceil((live - now) / (1000 * 60 * 60 * 24));
+  const el = document.getElementById('countdown');
+  if (diff > 0) {
+    el.textContent = 'リキッドワンマンまであと ' + diff + ' 日！';
+  } else if (diff === 0) {
+    el.textContent = 'リキッドワンマン、今日です！！🔥';
+  } else {
+    el.textContent = '';
+  }
+}
+updateCountdown();
+
 // ===== DATA =====
 const SITUATIONS = ['仕事・勉強中', '移動中', 'サボり中', 'まったり中'];
 const MOODS = ['楽しくなりたい！', 'ガンバるぞ！', 'しんみり沁みたい', 'あほになりたい'];
