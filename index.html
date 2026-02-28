@@ -1,785 +1,446 @@
 <!DOCTYPE html>
-<html lang="ja" style="background:#1A1A1A;">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>toybeeファン診断</title>
-<meta name="description" content="今のあなたにぴったりのtoybeeソング。2つの質問に答えて、あなたにおすすめの1曲を見つけよう！">
-<meta property="og:title" content="toybeeファン診断">
-<meta property="og:description" content="今のあなたにぴったりのtoybeeソング">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Bowlby+One+SC&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>プリンセス もじランド 👑</title>
 <style>
-:root {
-  --yellow: #FFD814;
-  --yellow-light: #FFF3B0;
-  --black: #1A1A1A;
-  --black-soft: #2D2D2D;
-  --white: #FFFEF5;
-  --gray: #888;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: 'Zen Maru Gothic', sans-serif;
-  background: #1A1A1A;
-  background-color: #1A1A1A;
-  color: var(--white);
-  min-height: 100dvh;
-  overflow-x: hidden;
-}
-
-/* ===== BACKGROUND PATTERN ===== */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(255,216,20,0.06) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(255,216,20,0.04) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ===== HEXAGON BG PATTERN ===== */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52' viewBox='0 0 60 52'%3E%3Cpath d='M30 0L60 15v22L30 52 0 37V15z' fill='none' stroke='%23FFD814' stroke-opacity='0.04' stroke-width='1'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ===== SCREENS ===== */
-.screen {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100dvh;
-  padding: 2rem 1.25rem;
-  position: relative;
-  z-index: 1;
-  animation: fadeIn 0.4s ease-out;
-}
-
-.screen.active {
-  display: flex;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bounceIn {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.05); }
-  70% { transform: scale(0.95); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-/* ===== LANDING ===== */
-.landing-bee {
-  font-size: 4rem;
-  animation: float 2s ease-in-out infinite;
-  margin-bottom: 0.5rem;
-  filter: drop-shadow(0 0 20px rgba(255,216,20,0.3));
-}
-
-.landing-title {
-  font-family: 'Bowlby One SC', sans-serif;
-  font-size: clamp(2.2rem, 8vw, 3.5rem);
-  color: var(--yellow);
-  text-shadow: 
-    3px 3px 0 var(--black-soft),
-    0 0 40px rgba(255,216,20,0.3);
-  letter-spacing: 0.02em;
-  text-align: center;
-  line-height: 1.2;
-}
-
-.landing-sub {
-  font-size: 1.05rem;
-  color: var(--yellow-light);
-  margin-top: 0.75rem;
-  text-align: center;
-  font-weight: 400;
-  opacity: 0.9;
-}
-
-.landing-notice {
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.8);
-  margin-top: 1.5rem;
-  text-align: center;
-  line-height: 1.5;
-}
-
-/* ===== BUTTONS ===== */
-.btn-start {
-  margin-top: 2.5rem;
-  padding: 1rem 3rem;
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 900;
-  color: var(--black);
-  background: var(--yellow);
-  border: none;
-  border-radius: 60px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4px 0 #C4A600,
-    0 6px 20px rgba(255,216,20,0.3);
-}
-
-.btn-start:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 6px 0 #C4A600,
-    0 8px 30px rgba(255,216,20,0.4);
-}
-
-.btn-start:active {
-  transform: translateY(2px);
-  box-shadow: 
-    0 2px 0 #C4A600,
-    0 3px 10px rgba(255,216,20,0.2);
-}
-
-.btn-start::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.5s;
-}
-
-.btn-start:hover::after {
-  left: 100%;
-}
-
-/* ===== QUESTION SCREENS ===== */
-.q-number {
-  font-family: 'Bowlby One SC', sans-serif;
-  font-size: 0.9rem;
-  color: var(--yellow);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-
-.q-progress {
-  width: 120px;
-  height: 4px;
-  background: var(--black-soft);
-  border-radius: 2px;
-  margin-bottom: 1.5rem;
-  overflow: hidden;
-}
-
-.q-progress-bar {
-  height: 100%;
-  background: var(--yellow);
-  border-radius: 2px;
-  transition: width 0.4s ease;
-}
-
-.q-title {
-  font-size: clamp(1.5rem, 5vw, 2rem);
-  font-weight: 900;
-  text-align: center;
-  margin-bottom: 2rem;
-  line-height: 1.4;
-}
-
-.choices {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  width: 100%;
-  max-width: 360px;
-}
-
-.choice-btn {
-  padding: 1.1rem 1.5rem;
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--white);
-  background: var(--black-soft);
-  border: 2px solid rgba(255,216,20,0.15);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-align: left;
-  position: relative;
-  overflow: hidden;
-}
-
-.choice-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,216,20,0.08), transparent);
-  opacity: 0;
-  transition: opacity 0.25s;
-}
-
-.choice-btn:hover {
-  border-color: var(--yellow);
-  transform: translateX(6px);
-  background: rgba(255,216,20,0.1);
-}
-
-.choice-btn:hover::before {
-  opacity: 1;
-}
-
-.choice-btn:active {
-  transform: scale(0.97);
-}
-
-/* ===== RESULT SCREEN ===== */
-#result-screen {
-  justify-content: flex-start;
-  padding-top: 2rem;
-  padding-bottom: 3rem;
-}
-
-.result-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: var(--yellow);
-  color: var(--black);
-  font-size: 0.8rem;
-  font-weight: 900;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  margin-bottom: 1.25rem;
-  animation: bounceIn 0.6s ease-out;
-}
-
-.result-song-name {
-  font-family: 'Bowlby One SC', sans-serif;
-  font-size: clamp(1.3rem, 5vw, 1.8rem);
-  color: var(--yellow);
-  text-align: center;
-  line-height: 1.3;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 0 30px rgba(255,216,20,0.2);
-}
-
-.result-comment-box {
-  background: rgba(255,216,20,0.06);
-  border: 1px solid rgba(255,216,20,0.15);
-  border-radius: 16px;
-  padding: 1.25rem 1.5rem;
-  margin: 1rem 0 1.5rem;
-  width: 100%;
-  max-width: 420px;
-  position: relative;
-}
-
-.result-comment-box::before {
-  content: '🐝';
-  position: absolute;
-  top: -12px;
-  left: 16px;
-  font-size: 1.2rem;
-}
-
-.result-comment-line1 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--yellow-light);
-  line-height: 1.6;
-  margin-bottom: 0.5rem;
-}
-
-.result-comment-line2 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1.6;
-}
-
-/* ===== VIDEO EMBED ===== */
-.video-container {
-  width: 100%;
-  max-width: 520px;
-  aspect-ratio: 16/9;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-  background: var(--black-soft);
-}
-
-.video-container iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-.video-container.shorts {
-  aspect-ratio: 9/16;
-  max-width: 240px;
-  max-height: 420px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#video-area {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.video-coming-soon {
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: 16/9;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-  background: var(--black-soft);
-  border: 2px dashed rgba(255,216,20,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  color: var(--gray);
-}
-
-/* ===== CTA BUTTONS ===== */
-.cta-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-  max-width: 420px;
-}
-
-.cta-live {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-  padding: 1.2rem 1.5rem;
-  background: var(--yellow);
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 0 #C4A600;
-  position: relative;
-  overflow: hidden;
-}
-
-.cta-live::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 8px,
-    rgba(0,0,0,0.03) 8px,
-    rgba(0,0,0,0.03) 16px
-  );
-}
-
-.cta-live:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 #C4A600, 0 8px 20px rgba(255,216,20,0.2);
-}
-
-.cta-live-lead {
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--yellow-light);
-  opacity: 0.8;
-  text-align: center;
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
-}
-
-#countdown {
-  font-weight: 900;
-  color: var(--yellow);
-  font-size: 0.9rem;
-}
-
-.cta-live-main {
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 900;
-  color: var(--black);
-  position: relative;
-}
-
-.cta-live-date {
-  font-family: 'Bowlby One SC', sans-serif;
-  font-size: 0.95rem;
-  color: var(--black);
-  opacity: 0.8;
-  position: relative;
-}
-
-.cta-live-venue {
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--black);
-  opacity: 0.6;
-  position: relative;
-}
-
-.cta-live-arrow {
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 900;
-  color: var(--black);
-  opacity: 0.8;
-  position: relative;
-  margin-top: 0.2rem;
-}
-
-.cta-secondary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.9rem;
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--yellow);
-  background: transparent;
-  border: 2px solid rgba(255,216,20,0.3);
-  border-radius: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.25s ease;
-}
-
-.cta-secondary:hover {
-  border-color: var(--yellow);
-  background: rgba(255,216,20,0.08);
-}
-
-.cta-tertiary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.8rem;
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: var(--gray);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.cta-tertiary:hover { color: var(--white); }
-
-/* ===== FOOTER ===== */
-.footer {
-  width: 100%;
-  max-width: 420px;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255,216,20,0.1);
-  text-align: center;
-}
-
-.footer-disclaimer {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.8);
-  line-height: 1.5;
-}
-
-/* ===== SHARED TOAST ===== */
-.toast {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: var(--yellow);
-  color: var(--black);
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 0.85rem;
-  z-index: 100;
-  transition: transform 0.3s ease;
-  pointer-events: none;
-}
-
-.toast.show {
-  transform: translateX(-50%) translateY(0);
-}
+@import url('https://fonts.googleapis.com/css2?family=Klee+One:wght@600&family=Rounded+Mplus+1c:wght@400;700;900&display=swap');
+*{-webkit-tap-highlight-color:transparent;user-select:none;box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;overscroll-behavior-x:none}
+body{font-family:'Rounded Mplus 1c','Hiragino Maru Gothic Pro','Yu Gothic',sans-serif;min-height:100vh;background:linear-gradient(160deg,#FFF0F5 0%,#FDE2F3 25%,#F0E6FF 50%,#E8F4FD 75%,#FFF0F5 100%)}
+::-webkit-scrollbar{height:4px}
+::-webkit-scrollbar-thumb{background:#FFB6D9;border-radius:4px}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}50%{opacity:1}100%{opacity:0;transform:translateY(85vh) rotate(540deg) scale(.5)}}
+@keyframes popIn{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes sparkle{0%,100%{opacity:1;transform:scale(1) rotate(0)}50%{opacity:.6;transform:scale(1.3) rotate(180deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes praiseFloat{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}20%{opacity:1;transform:translate(-50%,-5px) scale(1.1)}80%{opacity:1;transform:translate(-50%,-20px) scale(1)}100%{opacity:0;transform:translate(-50%,-40px) scale(.9)}}
+@keyframes tiaraGlow{0%,100%{filter:drop-shadow(0 0 6px rgba(255,215,0,.4))}50%{filter:drop-shadow(0 0 14px rgba(255,215,0,.8))}}
+@keyframes starBurst{0%{transform:scale(0) rotate(0);opacity:1}50%{transform:scale(1.5) rotate(180deg);opacity:1}100%{transform:scale(2) rotate(360deg);opacity:0}}
+@keyframes resultPop{0%{transform:scale(0);opacity:0}50%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
 </style>
 </head>
-<body style="background:#1A1A1A;">
-
-<!-- ===== LANDING ===== -->
-<div id="landing" class="screen active">
-  <div class="landing-bee">🐝</div>
-  <h1 class="landing-title">toybee<br>ファン診断</h1>
-  <p class="landing-sub">今のあなたにぴったりのtoybeeソングを診断します。</p>
-  <button class="btn-start" onclick="showScreen('q1')">はじめる</button>
-  <p class="landing-notice">※ 非公式のファンサイトです。toybee公式・関係者への本サイトに関するお問い合わせはご遠慮ください。<br>ご連絡は <a href="https://x.com/inaken816" target="_blank" rel="noopener" style="color:var(--yellow-light);opacity:0.7">@inaken816</a> (X) / <a href="mailto:f000167a@yahoo.co.jp" style="color:var(--yellow-light);opacity:0.7">メール</a> まで</p>
-</div>
-
-<!-- ===== Q1 ===== -->
-<div id="q1" class="screen">
-  <div class="q-number">Question 1 / 2</div>
-  <div class="q-progress"><div class="q-progress-bar" style="width:50%"></div></div>
-  <h2 class="q-title">今何してる？</h2>
-  <div class="choices">
-    <button class="choice-btn" onclick="selectQ1(0)">💼 仕事・勉強中</button>
-    <button class="choice-btn" onclick="selectQ1(1)">🚃 移動中</button>
-    <button class="choice-btn" onclick="selectQ1(2)">🫠 サボり中</button>
-    <button class="choice-btn" onclick="selectQ1(3)">☕ まったり中</button>
-  </div>
-</div>
-
-<!-- ===== Q2 ===== -->
-<div id="q2" class="screen">
-  <div class="q-number">Question 2 / 2</div>
-  <div class="q-progress"><div class="q-progress-bar" style="width:100%"></div></div>
-  <h2 class="q-title">どんな気分？</h2>
-  <div class="choices">
-    <button class="choice-btn" onclick="selectQ2(0)">🎵 楽しくなりたい！</button>
-    <button class="choice-btn" onclick="selectQ2(1)">🔥 ガンバるぞ！</button>
-    <button class="choice-btn" onclick="selectQ2(2)">🌙 しんみり沁みたい</button>
-    <button class="choice-btn" onclick="selectQ2(3)">🤪 あほになりたい</button>
-  </div>
-</div>
-
-<!-- ===== RESULT ===== -->
-<div id="result-screen" class="screen">
-  <div class="result-badge">🐝 あなたへのおすすめ</div>
-  <div class="result-song-name" id="result-song"></div>
-  <div class="result-comment-box">
-    <div class="result-comment-line1" id="result-line1"></div>
-    <div class="result-comment-line2" id="result-line2"></div>
-  </div>
-  <div id="video-area"></div>
-  <div class="cta-group">
-    <p class="cta-live-lead">この曲が気になったあなたへ 🐝<br><span id="countdown"></span></p>
-    <a class="cta-live" href="https://www.liquidroom.net/schedule/toybee_20260322" target="_blank" rel="noopener">
-      <span class="cta-live-main">toybeeワンマンライブ開催！</span>
-      <span class="cta-live-date">2026.3.22 SUN</span>
-      <span class="cta-live-venue">＠恵比寿LIQUIDROOM</span>
-      <span class="cta-live-arrow">→ チェックする</span>
-    </a>
-    <button class="cta-secondary" id="cta-share" onclick="shareOnX()">
-      𝕏 結果をシェア
-    </button>
-    <button class="cta-tertiary" onclick="retry()">
-      🔄 他の気分も試す？
-    </button>
-  </div>
-  <div class="footer">
-    <div class="footer-disclaimer">
-      ※ 非公式のファンサイトです。toybee公式・関係者への本サイトに関するお問い合わせはご遠慮ください。<br>
-      ご連絡は <a href="https://x.com/inaken816" target="_blank" rel="noopener" style="color:var(--yellow-light);opacity:0.7">@inaken816</a> (X) / <a href="mailto:f000167a@yahoo.co.jp" style="color:var(--yellow-light);opacity:0.7">メール</a> まで
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast">シェア画面を開きました！</div>
-
+<body>
+<div id="app" style="padding:12px;position:relative;min-height:100vh"></div>
+<canvas id="refCvs" width="500" height="500" style="display:none"></canvas>
 <script>
-// ===== COUNTDOWN =====
-function updateCountdown() {
-  const live = new Date('2026-03-22T00:00:00+09:00');
-  const now = new Date();
-  const diff = Math.ceil((live - now) / (1000 * 60 * 60 * 24));
-  const el = document.getElementById('countdown');
-  if (diff > 0) {
-    el.textContent = 'リキッドワンマンまであと ' + diff + ' 日！';
-  } else if (diff === 0) {
-    el.textContent = 'リキッドワンマン、今日です！！🔥';
-  } else {
-    el.textContent = '';
-    // Hide live CTA after the event
-    var liveLead = document.querySelector('.cta-live-lead');
-    var liveBtn = document.querySelector('.cta-live');
-    if (liveLead) liveLead.style.display = 'none';
-    if (liveBtn) liveBtn.style.display = 'none';
-  }
-}
-updateCountdown();
+(function(){
 
-// ===== DATA =====
-const SITUATIONS = ['仕事・勉強中', '移動中', 'サボり中', 'まったり中'];
-const MOODS = ['楽しくなりたい！', 'ガンバるぞ！', 'しんみり沁みたい', 'あほになりたい'];
-
-const MATRIX = [
-  // [曲名, YouTube ID, 動画タイプ(mv/shorts/none), linkco.re, コメント1行目, コメント2行目]
-  // 💼 仕事・勉強中
-  [
-    ['TOYROCK -TOYBEEのテーマ-', 'tagYTVlpLRw', 'mv', 'vdbMnTFZ',
-     '仕事・勉強中で楽しくなりたいあなたには、「TOYROCK -TOYBEEのテーマ-」がおすすめ！',
-     'ノリノリで、パパッと片付けちゃおう！'],
-    ['シモキタ・モーニング・ブルース', 'dRhY5Q0VGCA', 'shorts', 'vdbMnTFZ',
-     '仕事・勉強中でガンバりたいあなたには、「シモキタ・モーニング・ブルース」がおすすめ！',
-     'これを聴いて、もうひと頑張りだ！！'],
-    ['LOOKBACK', 'Wzz05DNQLws', 'mv', 'vVX5arU0',
-     '仕事・勉強中でしんみり沁みたいあなたには、「LOOKBACK」がおすすめ！',
-     '一息ついて、自分の頑張りを見直してみよう！'],
-    ['あほんだらいふ', 'VjIvbjMe3W0', 'mv', 'xy3VVm2n',
-     '仕事・勉強中であほになりたいあなたには、「あほんだらいふ」がおすすめ！',
-     'Oh ちょっと本気出しちゃうか？']
-  ],
-  // 🚃 移動中
-  [
-    ['ライド・アンド・ライブ', 'XLqQtzjMniE', 'shorts', 'X5Pq74NB',
-     '移動中で楽しくなりたいあなたには、「ライド・アンド・ライブ」がおすすめ！',
-     'でも、ノリすぎて乗り越しには注意！'],
-    ['フロムアンダーランド', 'W7VTpOs9UfQ', 'mv', 'VD6ZD7cq',
-     '移動中でガンバりたいあなたには、「フロムアンダーランド」がおすすめ！',
-     'アンダーランドから、新しい世界にGO！'],
-    ['惑星ダブリス', 'D1R_ts0iFuw', 'mv', 'xy3VVm2n',
-     '移動中でしんみり沁みたいあなたには、「惑星ダブリス」がおすすめ！',
-     '次の停車駅は、惑星ダブリス。'],
-    ['あほんだらいふ', 'VjIvbjMe3W0', 'mv', 'xy3VVm2n',
-     '移動中であほになりたいあなたには、「あほんだらいふ」がおすすめ！',
-     'イメージは Ah 軽い放物線～']
-  ],
-  // 🫠 サボり中
-  [
-    ['Flight Music', 'caswX1TeiN8', 'mv', 'xy3VVm2n',
-     'サボり中で楽しくなりたいあなたには、「Flight Music」がおすすめ！',
-     '脳内ライブ会場、開演です。ぶっ飛んじゃえ！'],
-    ['それゆけ!夢みるゾンビーズ!!', 'oHXRd-iyOz8', 'mv', 'xy3VVm2n',
-     'サボり中でガンバりたいあなたには、「それゆけ!夢みるゾンビーズ!!」がおすすめ！',
-     'このままゾンビのままじゃ終わらないぞ！'],
-    ['風知らぬひと', '4cjbydaUoy4', 'mv', 'VD6ZD7cq',
-     'サボり中でしんみり沁みたいあなたには、「風知らぬひと」がおすすめ！',
-     '沁みる歌声に、少しだけ浸ってみよう。。'],
-    ['あほんだらいふ', 'VjIvbjMe3W0', 'mv', 'xy3VVm2n',
-     'サボり中であほになりたいあなたには、「あほんだらいふ」がおすすめ！',
-     'もうちょっと待っていて欲しいんだ〜']
-  ],
-  // ☕ まったり中
-  [
-    ['道化師のラブソング', 'sSPcFSVpNw0', 'mv', 'mM3aCqtf',
-     'まったり中で楽しくなりたいあなたには、「道化師のラブソング」がおすすめ！',
-     'ギターの旋律に聴き惚れろ！'],
-    ['全米は泣かない', 'gEjyKlgWKHw', 'shorts', 'xy3VVm2n',
-     'まったり中でガンバりたいあなたには、「全米は泣かない」がおすすめ！',
-     '全米は泣かなくても、これはあなたの物語！'],
-    ['ハナマル', 'INhfrOC7e10', 'shorts', 'XPShXTs9',
-     'まったり中でしんみり沁みたいあなたには、「ハナマル」がおすすめ！',
-     '私から満点ハナマルあげちゃいます！'],
-    ['あほんだらいふ', 'VjIvbjMe3W0', 'mv', 'xy3VVm2n',
-     'まったり中であほになりたいあなたには、「あほんだらいふ」がおすすめ！',
-     'いつまでも夏休みって感じで！']
-  ]
+var HG=[
+["あ行","あ","い","う","え","お"],
+["か行","か","き","く","け","こ"],
+["さ行","さ","し","す","せ","そ"],
+["た行","た","ち","つ","て","と"],
+["な行","な","に","ぬ","ね","の"],
+["は行","は","ひ","ふ","へ","ほ"],
+["ま行","ま","み","む","め","も"],
+["や行","や","ゆ","よ"],
+["ら行","ら","り","る","れ","ろ"],
+["わ行","わ","を","ん"],
+["が行","が","ぎ","ぐ","げ","ご"],
+["ざ行","ざ","じ","ず","ぜ","ぞ"],
+["だ行","だ","ぢ","づ","で","ど"],
+["ば行","ば","び","ぶ","べ","ぼ"],
+["ぱ行","ぱ","ぴ","ぷ","ぺ","ぽ"]
+];
+var KG=[
+["ア行","ア","イ","ウ","エ","オ"],
+["カ行","カ","キ","ク","ケ","コ"],
+["サ行","サ","シ","ス","セ","ソ"],
+["タ行","タ","チ","ツ","テ","ト"],
+["ナ行","ナ","ニ","ヌ","ネ","ノ"],
+["ハ行","ハ","ヒ","フ","ヘ","ホ"],
+["マ行","マ","ミ","ム","メ","モ"],
+["ヤ行","ヤ","ユ","ヨ"],
+["ラ行","ラ","リ","ル","レ","ロ"],
+["ワ行","ワ","ヲ","ン"],
+["ガ行","ガ","ギ","グ","ゲ","ゴ"],
+["ザ行","ザ","ジ","ズ","ゼ","ゾ"],
+["ダ行","ダ","ヂ","ヅ","デ","ド"],
+["バ行","バ","ビ","ブ","ベ","ボ"],
+["パ行","パ","ピ","プ","ペ","ポ"]
 ];
 
-// ===== STATE =====
-let q1Answer = -1;
-let currentSong = '';
-let currentVideoId = '';
-let currentVideoType = '';
+var RM="あ a,い i,う u,え e,お o,か ka,き ki,く ku,け ke,こ ko,さ sa,し shi,す su,せ se,そ so,た ta,ち chi,つ tsu,て te,と to,な na,に ni,ぬ nu,ね ne,の no,は ha,ひ hi,ふ fu,へ he,ほ ho,ま ma,み mi,む mu,め me,も mo,や ya,ゆ yu,よ yo,ら ra,り ri,る ru,れ re,ろ ro,わ wa,を wo,ん n,が ga,ぎ gi,ぐ gu,げ ge,ご go,ざ za,じ ji,ず zu,ぜ ze,ぞ zo,だ da,ぢ di,づ du,で de,ど do,ば ba,び bi,ぶ bu,べ be,ぼ bo,ぱ pa,ぴ pi,ぷ pu,ぺ pe,ぽ po,ア a,イ i,ウ u,エ e,オ o,カ ka,キ ki,ク ku,ケ ke,コ ko,サ sa,シ shi,ス su,セ se,ソ so,タ ta,チ chi,ツ tsu,テ te,ト to,ナ na,ニ ni,ヌ nu,ネ ne,ノ no,ハ ha,ヒ hi,フ fu,ヘ he,ホ ho,マ ma,ミ mi,ム mu,メ me,モ mo,ヤ ya,ユ yu,ヨ yo,ラ ra,リ ri,ル ru,レ re,ロ ro,ワ wa,ヲ wo,ン n,ガ ga,ギ gi,グ gu,ゲ ge,ゴ go,ザ za,ジ ji,ズ zu,ゼ ze,ゾ zo,ダ da,ヂ di,ヅ du,デ de,ド do,バ ba,ビ bi,ブ bu,ベ be,ボ bo,パ pa,ピ pi,プ pu,ペ pe,ポ po";
+var R={};
+RM.split(",").forEach(function(p){var a=p.split(" ");R[a[0]]=a[1];});
 
-// ===== NAVIGATION =====
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const target = document.getElementById(id);
-  target.classList.add('active');
-  window.scrollTo(0, 0);
-  target.style.animation = 'none';
-  target.offsetHeight;
-  target.style.animation = '';
+var WD={};
+var WS=[
+"あ 🍬 あめ (キャンディ♪)","い 💎 いし (ほうせき)","う 🎵 うた (おうた♪)","え 👗 えるさ みたいな ドレス","お 👸 おひめさま",
+"か 👑 かんむり (ティアラ！)","き ✨ きらきら ひかる","く 👠 くつ (ガラスの くつ)","け 🎂 けーき♪","こ 💖 こころ (ハート)",
+"さ 🌸 さくら (きれい！)","し 🏰 しろ (おしろ)","す ⭐ すたー (おほし)","せ 🧚 せかい (まほうの せかい)","そ ☁️ そら",
+"た 💎 たからもの","ち 🦋 ちょうちょ","つ 🌙 つき (おつきさま)","て 🤝 て (つなごう)","と 🐦 とり (ことり)",
+"な 🌷 なのはな","に 🌈 にじ (レインボー！)","ぬ 🧸 ぬいぐるみ","ね 🐱 ねこ (にゃー♪)","の 🌹 のばら",
+"は 🌸 はな (おはな)","ひ 💫 ひかり (キラキラ)","ふ 🎀 ふりふり (フリル♪)","へ 🪄 へんしん (プリキュア！)","ほ ⭐ ほし (おほしさま)",
+"ま ✨ まほう (まほうつかい)","み 🪞 みらー (かがみよ かがみ)","む 💜 むらさき","め 👸 めいく (おけしょう ごっこ)","も 🍑 もも (ピーチ♪)",
+"や 🏔️ やま","ゆ ❄️ ゆき (ありのままで♪)","よ 🧚 ようせい (フェアリー)",
+"ら 💜 らべんだー","り 🎀 りぼん (かわいい♪)","る 💎 るびー (ほうせき)","れ 👗 れーす (ドレス)","ろ 🕯️ ろうそく (おねがい！)",
+"わ 💍 わっか (ゆびわ)","を 🎶 を","ん 🌟 ん",
+"が 🎵 がっき (おんがく♪)","ぎ 🥛 ぎゅうにゅう","ぐ 🧤 ぐろーぶ (てぶくろ)","げ 🎮 げーむ (あそぼ！)","ご 🍚 ごはん (もぐもぐ)",
+"ざ 📖 ざっし (えほん)","じ 🧲 じしゃく","ず 🖍️ ずこう (おえかき♪)","ぜ 🍮 ぜりー (おやつ)","ぞ 🐘 ぞう (おおきい！)",
+"だ 🤗 だいすき！","ぢ 🩹 はなぢ","づ 🫙 つけもの (おづけもの)","で 🚪 でぐち (おでかけ)","ど 🚗 どらいぶ (おでかけ♪)",
+"ば 🌹 ばら (おはな)","び 🏥 びょういん","ぶ 🐷 ぶた (ぶーぶー)","べ 🍱 おべんとう (おいしい♪)","ぼ 🎩 ぼうし (おしゃれ)",
+"ぱ 🥞 ぱんけーき♪","ぴ 🐣 ぴよぴよ (ひよこ)","ぷ 🍮 ぷりん (おやつ！)","ぺ 🐧 ぺんぎん (かわいい♪)","ぽ 🍿 ぽっぷこーん",
+"ア 🍬 アメ (キャンディ♪)","イ 💎 イシ (ホウセキ)","ウ 🎵 ウタ♪","エ 👗 エルサみたいな ドレス","オ 👸 オヒメサマ",
+"カ 👑 カンムリ (ティアラ！)","キ ✨ キラキラ","ク 👠 クツ (ガラスの クツ)","ケ 🎂 ケーキ♪","コ 💖 ココロ (ハート)",
+"サ 🌸 サクラ","シ 🏰 シロ (おシロ)","ス ⭐ スター","セ 🧚 セカイ (まほうの セカイ)","ソ ☁️ ソラ",
+"タ 💎 タカラモノ","チ 🦋 チョウチョ","ツ 🌙 ツキ (おツキサマ)","テ 🤝 テ (つなごう)","ト 🐦 トリ (コトリ)",
+"ナ 🌷 ナノハナ","ニ 🌈 ニジ (レインボー！)","ヌ 🧸 ヌイグルミ","ネ 🐱 ネコ (にゃー♪)","ノ 🌹 ノバラ",
+"ハ 🌸 ハナ (おハナ)","ヒ 💫 ヒカリ","フ 🎀 フリフリ (フリル♪)","ヘ 🪄 ヘンシン (プリキュア！)","ホ ⭐ ホシ",
+"マ ✨ マホウ (まほうつかい)","ミ 🪞 ミラー (かがみ)","ム 💜 ムラサキ","メ 👸 メイク (おケショウ)","モ 🍑 モモ (ピーチ♪)",
+"ヤ 🏔️ ヤマ","ユ ❄️ ユキ (ありのままで♪)","ヨ 🧚 ヨウセイ (フェアリー)",
+"ラ 💜 ラベンダー","リ 🎀 リボン (カワイイ♪)","ル 💎 ルビー","レ 👗 レース (ドレス)","ロ 🕯️ ロウソク (おネガイ！)",
+"ワ 💍 ワッカ (ユビワ)","ヲ 🎶 ヲ","ン 🌟 ン",
+"ガ 🎵 ガッキ (オンガク♪)","ギ 🥛 ギュウニュウ","グ 🧤 グローブ (テブクロ)","ゲ 🎮 ゲーム (アソボ！)","ゴ 🍚 ゴハン (モグモグ)",
+"ザ 📖 ザッシ (エホン)","ジ 🧲 ジシャク","ズ 🖍️ ズコウ (おエカキ♪)","ゼ 🍮 ゼリー (オヤツ)","ゾ 🐘 ゾウ (オオキイ！)",
+"ダ 🤗 ダイスキ！","ヂ 🩹 ハナヂ","ヅ 🫙 ツケモノ (おヅケモノ)","デ 🚪 デグチ (おデカケ)","ド 🚗 ドライブ (おデカケ♪)",
+"バ 🌹 バラ (おハナ)","ビ 🏥 ビョウイン","ブ 🐷 ブタ (ブーブー)","ベ 🍱 おベントウ (オイシイ♪)","ボ 🎩 ボウシ (オシャレ)",
+"パ 🥞 パンケーキ♪","ピ 🐣 ピヨピヨ (ヒヨコ)","プ 🍮 プリン (オヤツ！)","ペ 🐧 ペンギン (カワイイ♪)","ポ 🍿 ポップコーン"
+];
+WS.forEach(function(s){var i=s.indexOf(" ");WD[s.charAt(0)]=s.substring(i+1);});
+
+var PR=["すごーい！👸✨","おひめさま みたい！👑","きらきら〜！💎","まほうつかい だね！🪄","かわいい〜！🎀","100てん！💖","ぱーふぇくと！⭐","すてき〜！🌸","やったね！🎉","てんさい！🌈","プリキュア みたい！💫","プリンセス！👸💖"];
+var GC=["#FF69B4","#B388FF","#87CEEB","#FFB6D9","#FFEAA7","#DDA0DD","#FF9FF3","#54A0FF","#E8D5F5","#FFD700","#FF6348","#48DBFB","#A29BFE","#FD79A8","#00B894"];
+var PCS=["#FF69B4","#B388FF","#222222","#87CEEB","#FFD700","#FF6348","#2ED573","#FF9FF3"];
+var SHP=["✨","⭐","💖","🌸","👑","💎","🎀","🦋"];
+
+var mode="hiragana",grp=0,ch=null,isQuiz=false;
+var qCh=null,qOpts=[],qRes=null,score=0,streak=0,praise="";
+var penCol="#FF69B4",penSz=6,showCf=false;
+var cvs=null,drawing=false,lastPt=null;
+var cfTimer=null;
+var judgeResult=null,judgeTimer=null;
+var hasStrokes=false;
+var CW=500;
+
+function getGroups(){return mode==="hiragana"?HG:KG;}
+function getChars(g){return g.slice(1);}
+function allRomaji(){var o={};for(var k in R)o[R[k]]=1;return Object.keys(o);}
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+
+function drawGuide(){
+  if(!cvs)return;
+  var x=cvs.getContext("2d");
+  x.clearRect(0,0,CW,CW);
+  x.strokeStyle="#F5D0E0";x.lineWidth=1;x.setLineDash([8,8]);
+  x.beginPath();x.moveTo(CW/2,0);x.lineTo(CW/2,CW);x.moveTo(0,CW/2);x.lineTo(CW,CW/2);x.stroke();
+  x.setLineDash([]);
+  if(ch){
+    var fs=Math.round(CW*0.65);
+    x.font="600 "+fs+"px 'YuKyokasho Yoko','YuKyokasho','Klee One',serif";x.fillStyle="rgba(255,182,217,.2)";x.textAlign="center";x.textBaseline="middle";x.fillText(ch,CW/2,CW/2+CW*0.02);
+  }
+  hasStrokes=false;
+  judgeResult=null;
 }
 
-function selectQ1(idx) {
-  q1Answer = idx;
-  showScreen('q2');
+function getPos(e){
+  var r=cvs.getBoundingClientRect(),t=e.touches?e.touches[0]:e;
+  return{x:(t.clientX-r.left)*(CW/r.width),y:(t.clientY-r.top)*(CW/r.height)};
+}
+function onDown(e){e.preventDefault();drawing=true;lastPt=getPos(e);}
+function onMove(e){
+  e.preventDefault();if(!drawing||!cvs)return;
+  var x=cvs.getContext("2d"),p=getPos(e);
+  x.strokeStyle=penCol;x.lineWidth=penSz*(CW/340);x.lineCap="round";x.lineJoin="round";
+  x.beginPath();x.moveTo(lastPt.x,lastPt.y);x.lineTo(p.x,p.y);x.stroke();
+  lastPt=p;hasStrokes=true;
+}
+function onUp(e){e.preventDefault();drawing=false;lastPt=null;}
+
+function setupCanvas(){
+  cvs=document.getElementById("dc");
+  if(!cvs)return;
+  drawGuide();
+  cvs.addEventListener("mousedown",onDown);
+  cvs.addEventListener("mousemove",onMove);
+  cvs.addEventListener("mouseup",onUp);
+  cvs.addEventListener("mouseleave",onUp);
+  cvs.addEventListener("touchstart",onDown,{passive:false});
+  cvs.addEventListener("touchmove",onMove,{passive:false});
+  cvs.addEventListener("touchend",onUp,{passive:false});
 }
 
-function selectQ2(idx) {
-  const data = MATRIX[q1Answer][idx];
-  currentSong = data[0];
-  currentVideoId = data[1];
-  currentVideoType = data[2];
+function judgeHandwriting(){
+  if(!cvs||!ch||!hasStrokes)return;
+  var ref=document.getElementById("refCvs");
+  ref.width=CW;ref.height=CW;
+  var rx=ref.getContext("2d");
+  rx.clearRect(0,0,CW,CW);
+  var fs=Math.round(CW*0.65);
+  rx.font="600 "+fs+"px 'YuKyokasho Yoko','YuKyokasho','Klee One',serif";
+  rx.fillStyle="#000000";
+  rx.textAlign="center";
+  rx.textBaseline="middle";
+  rx.fillText(ch,CW/2,CW/2+CW*0.02);
 
-  document.getElementById('result-song').textContent = '「' + data[0] + '」';
-  document.getElementById('result-line1').textContent = data[4];
-  document.getElementById('result-line2').textContent = data[5];
+  var refData=rx.getImageData(0,0,CW,CW).data;
+  var drawnData=cvs.getContext("2d").getImageData(0,0,CW,CW).data;
 
-  const videoArea = document.getElementById('video-area');
-  if (data[2] === 'mv') {
-    videoArea.innerHTML = '<div class="video-container"><iframe src="https://www.youtube.com/embed/' + data[1] + '?rel=0" allowfullscreen loading="lazy"></iframe></div>';
-  } else if (data[2] === 'shorts') {
-    videoArea.innerHTML = '<div class="video-container shorts"><iframe src="https://www.youtube.com/embed/' + data[1] + '?rel=0" allowfullscreen loading="lazy"></iframe></div>';
+  var refPx=0,drawnPx=0,overlap=0;
+  var step=4;
+  for(var i=0;i<refData.length;i+=4*step){
+    var rA=refData[i+3]>30;
+    var dR=drawnData[i],dG=drawnData[i+1],dB=drawnData[i+2],dA=drawnData[i+3];
+    var isGuide=(dA>20&&dA<120&&dR>200&&dG>150&&dB>180);
+    var isGrid=(dA>10&&dA<80&&dR>220&&dG>180);
+    var dPx=dA>40&&!isGuide&&!isGrid;
+
+    if(rA)refPx++;
+    if(dPx)drawnPx++;
+    if(rA&&dPx)overlap++;
+  }
+
+  if(refPx===0||drawnPx===0){judgeResult={level:0};renderJudge();if(judgeTimer)clearTimeout(judgeTimer);judgeTimer=setTimeout(function(){drawGuide();judgeResult=null;var ja=document.getElementById("judgeArea");if(ja)ja.innerHTML="";},2500);return;}
+  var coverage=overlap/refPx;
+  var precision=overlap/drawnPx;
+  var fScore=(coverage*precision)>0?2*(coverage*precision)/(coverage+precision):0;
+  var spread=drawnPx/refPx;
+
+  var level=0;
+  if(fScore>0.28&&coverage>0.25)level=3;
+  else if(fScore>0.18&&coverage>0.15)level=2;
+  else if(coverage>0.08||drawnPx>refPx*0.15)level=1;
+
+  if(spread>2.5)level=Math.min(level,1);
+
+  judgeResult={level:level,coverage:Math.round(coverage*100),fScore:Math.round(fScore*100)};
+  renderJudge();
+  if(judgeTimer)clearTimeout(judgeTimer);
+  if(level>=2){
+    doConfetti();
+    judgeTimer=setTimeout(function(){advanceChar();},3800);
+  }else{
+    judgeTimer=setTimeout(function(){
+      drawGuide();
+      judgeResult=null;
+      var ja=document.getElementById("judgeArea");if(ja)ja.innerHTML="";
+    },2500);
+  }
+}
+
+function advanceChar(){
+  var gs=getGroups(),chars=getChars(gs[grp]);
+  var idx=chars.indexOf(ch);
+  if(idx<chars.length-1){
+    ch=chars[idx+1];
+  }else if(grp<gs.length-1){
+    grp++;ch=getChars(gs[grp])[0];
+  }else{
+    grp=0;ch=getChars(gs[0])[0];
+  }
+  judgeResult=null;render();
+}
+
+function renderJudge(){
+  var el=document.getElementById("judgeArea");
+  if(!el||!judgeResult)return;
+  var lv=judgeResult.level;
+  var msgs=[
+    ["もういっかい かいてみよう！🌱","#C9A0DC"],
+    ["おしい！もうちょっと！💪✨","#54A0FF"],
+    ["じょうず！すてき〜！🌸","#FF69B4"],
+    ["はなまる！てんさい！🌟👑💖","#FFD700"]
+  ];
+  var m=msgs[lv];
+  var stars="";
+  for(var i=0;i<3;i++){
+    if(i<lv)stars+="<span style=\"font-size:clamp(36px,8vw,48px);animation:popIn .4s ease-out "+(i*0.15)+"s both\">⭐</span>";
+    else stars+="<span style=\"font-size:clamp(36px,8vw,48px);opacity:.3;filter:grayscale(1)\">⭐</span>";
+  }
+  var gs=getGroups(),chars=getChars(gs[grp]);
+  var idx=chars.indexOf(ch),nextCh="";
+  if(idx<chars.length-1)nextCh=chars[idx+1];
+  else if(grp<gs.length-1)nextCh=getChars(gs[grp+1])[0];
+  else nextCh=getChars(gs[0])[0];
+  var nextHtml="";
+  if(nextCh&&lv>=2)nextHtml="<div style=\"margin-top:6px;font-size:clamp(12px,3vw,14px);color:#C9A0DC\">つぎの もじ → <span style=\"font-size:clamp(18px,4vw,22px);font-weight:900;color:#FF69B4\">"+nextCh+"</span></div>";
+
+  el.innerHTML="<div style=\"animation:resultPop .4s ease-out;text-align:center;padding:16px 12px;background:rgba(255,255,255,.97);border-radius:20px;border:3px solid "+m[1]+";box-shadow:0 6px 30px "+m[1]+"55\">"
+    +"<div style=\"margin-bottom:4px\">"+stars+"</div>"
+    +"<div style=\"font-size:clamp(16px,4vw,22px);font-weight:900;color:"+m[1]+"\">"+m[0]+"</div>"
+    +nextHtml
+    +"</div>";
+}
+
+function doConfetti(){
+  praise=rnd(PR);
+  var cont=document.createElement("div");
+  cont.id="confettiCont";
+  for(var i=0;i<20;i++){
+    var d=document.createElement("div");
+    d.style.cssText="position:fixed;top:-20px;left:"+Math.random()*100+"%;font-size:18px;opacity:0;pointer-events:none;z-index:200;animation:confettiFall 2s ease-in "+Math.random()*0.5+"s forwards";
+    d.textContent=rnd(SHP);
+    cont.appendChild(d);
+  }
+  var p=document.createElement("div");
+  p.style.cssText="position:fixed;top:30%;left:50%;font-size:clamp(20px,6vw,32px);font-weight:900;color:#FF69B4;text-shadow:0 2px 10px rgba(255,105,180,.3);animation:praiseFloat 2s ease-out forwards;z-index:150;pointer-events:none;white-space:nowrap";
+  p.textContent=praise;
+  cont.appendChild(p);
+  document.body.appendChild(cont);
+  if(cfTimer)clearTimeout(cfTimer);
+  cfTimer=setTimeout(function(){var c=document.getElementById("confettiCont");if(c)c.remove();},2500);
+}
+
+function genQuiz(){
+  var gs=getGroups(),all=[];
+  gs.forEach(function(g){all=all.concat(getChars(g));});
+  var t=rnd(all),rv=R[t],opts=[rv],ar=allRomaji();
+  while(opts.length<4){var x=rnd(ar);if(opts.indexOf(x)===-1)opts.push(x);}
+  opts.sort(function(){return Math.random()-.5;});
+  qCh=t;qOpts=opts;qRes=null;
+}
+
+function render(){
+  var app=document.getElementById("app");
+  var gs=getGroups();
+  var chars=getChars(gs[grp]);
+  if(!ch)ch=chars[0];
+  var h="";
+
+  h+="<div style=\"position:absolute;top:20px;left:10%;font-size:20px;animation:sparkle 3s infinite;pointer-events:none;opacity:.5\">✨</div>";
+  h+="<div style=\"position:absolute;top:60px;right:8%;font-size:16px;animation:sparkle 4s infinite 1s;pointer-events:none;opacity:.4\">💎</div>";
+
+  h+="<div style=\"text-align:center;margin-bottom:10px\">";
+  h+="<div style=\"font-size:28px;animation:tiaraGlow 2s infinite;margin-bottom:-8px\">👑</div>";
+  h+="<div style=\"font-size:clamp(22px,6vw,34px);font-weight:900;margin:0 0 2px;background:linear-gradient(135deg,#FF69B4,#B388FF,#FF69B4,#FFD700);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:float 3s ease-in-out infinite;letter-spacing:3px\">プリンセス もじランド</div>";
+  h+="<div style=\"font-size:13px;color:#C9A0DC;font-weight:700\">🌸 まほうの もじを おぼえよう！ 🌸</div>";
+  h+="</div>";
+
+  h+="<div style=\"display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap\">";
+  var modes=[["hiragana","ひらがな","🌸"],["katakana","カタカナ","⭐"],["quiz","クイズ","👑"]];
+  for(var i=0;i<modes.length;i++){
+    var m=modes[i],ac=(m[0]==="quiz")?isQuiz:(mode===m[0]&&!isQuiz);
+    h+="<button data-mode=\""+m[0]+"\" style=\"padding:10px 20px;border-radius:50px;font-size:clamp(14px,3.5vw,17px);font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s;";
+    if(ac)h+="border:none;background:linear-gradient(135deg,#FF69B4,#B388FF);color:#fff;box-shadow:0 4px 15px rgba(255,105,180,.4)";
+    else h+="border:2px solid #FFD6EB;background:rgba(255,255,255,.8);color:#C9A0DC";
+    h+="\">"+m[2]+" "+m[1]+"</button>";
+  }
+  h+="</div>";
+
+  if(isQuiz){
+    h+="<div style=\"max-width:500px;margin:0 auto;text-align:center\">";
+    h+="<div style=\"display:flex;justify-content:center;gap:16px;margin-bottom:16px\">";
+    h+="<div style=\"background:rgba(255,255,255,.9);border-radius:16px;padding:8px 20px;box-shadow:0 2px 10px rgba(255,105,180,.15);border:2px solid #FFD6EB\"><div style=\"font-size:12px;color:#C9A0DC;font-weight:700\">💎 スコア</div><div style=\"font-size:28px;font-weight:900;color:#FF69B4\">"+score+"</div></div>";
+    h+="<div style=\"background:rgba(255,255,255,.9);border-radius:16px;padding:8px 20px;box-shadow:0 2px 10px rgba(179,136,255,.15);border:2px solid #E8D5F5\"><div style=\"font-size:12px;color:#C9A0DC;font-weight:700\">🔥 れんぞく</div><div style=\"font-size:28px;font-weight:900;color:#B388FF\">"+streak+(streak>=5?" 👸":streak>=3?" 👑":streak>=2?" ✨":"")+"</div></div>";
+    h+="</div>";
+    h+="<div style=\"background:rgba(255,255,255,.92);border-radius:24px;padding:24px;box-shadow:0 4px 20px rgba(255,105,180,.12);border:2px solid #FFD6EB;margin-bottom:16px;animation:"+(qRes==="wrong"?"shake .5s":"popIn .4s ease-out")+"\">";
+    h+="<div style=\"font-size:15px;color:#C9A0DC;margin:0 0 4px;font-weight:700\">🪄 このもじは な〜に？</div>";
+    h+="<div style=\"font-family:'YuKyokasho Yoko','YuKyokasho','Klee One',serif;font-size:clamp(80px,20vw,120px);font-weight:600;line-height:1.2;color:#FF69B4;animation:bounce 2s ease-in-out infinite;text-shadow:0 4px 15px rgba(255,105,180,.2)\">"+qCh+"</div>";
+    if(qRes==="correct")h+="<div style=\"font-size:22px;color:#FF69B4;font-weight:900;animation:popIn .3s;margin-top:4px\">"+praise+"</div>";
+    h+="</div>";
+    h+="<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px\">";
+    for(var i=0;i<qOpts.length;i++){
+      var o=qOpts[i],ok=qRes&&o===R[qCh];
+      h+="<button data-ans=\""+i+"\" style=\"padding:16px;border-radius:16px;border:3px solid "+(ok?"#FF69B4":"#FFD6EB")+";background:"+(ok?"linear-gradient(135deg,#FFF0F5,#FFE4F0)":"rgba(255,255,255,.9)")+";font-size:clamp(20px,5vw,28px);font-weight:700;cursor:pointer;font-family:inherit;color:#666\">"+o+"</button>";
+    }
+    h+="</div>";
+    h+="<button data-back=\"1\" style=\"margin-top:16px;padding:10px 24px;border-radius:50px;border:2px solid #FFD6EB;background:rgba(255,255,255,.8);font-size:14px;cursor:pointer;font-family:inherit;color:#C9A0DC;font-weight:700\">🌸 もどる</button>";
+    h+="</div>";
   } else {
-    videoArea.innerHTML = '<div class="video-coming-soon">🎬 MV 近日公開予定</div>';
+    h+="<div style=\"margin-bottom:12px\">";
+    h+="<div style=\"display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:4px 0 6px\">";
+    for(var i=0;i<gs.length;i++){
+      var ac=grp===i;
+      var isDaku=gs[i][0].charAt(0).match(/[がざだばぱガザダバパ]/);
+      if(i>0&&isDaku&&!gs[i-1][0].charAt(0).match(/[がざだばぱガザダバパ]/)){
+        h+="</div><div style=\"text-align:center;font-size:11px;color:#C9A0DC;font-weight:700;padding:2px 0\">🌟 だくてん・はんだくてん 🌟</div><div style=\"display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:2px 0 4px\">";
+      }
+      h+="<button data-grp=\""+i+"\" style=\"padding:7px 12px;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s;";
+      if(ac)h+="background:linear-gradient(135deg,"+GC[i%GC.length]+","+GC[(i+1)%GC.length]+");color:#fff;border:none;box-shadow:0 3px 12px "+GC[i%GC.length]+"44";
+      else h+="background:rgba(255,255,255,.7);color:#C9A0DC;border:2px solid #FFD6EB";
+      h+="\">"+gs[i][0]+"</button>";
+    }
+    h+="</div></div>";
+
+    h+="<div style=\"display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px\">";
+    for(var i=0;i<chars.length;i++){
+      var c=chars[i],sl=ch===c,gc=GC[grp%GC.length];
+      h+="<button data-ch=\""+i+"\" style=\"width:clamp(56px,15vw,68px);height:clamp(56px,15vw,68px);border-radius:18px;border:3px solid "+(sl?gc:"#FFE4F0")+";background:"+(sl?"#fff":"rgba(255,255,255,.7)")+";font-size:clamp(28px,7vw,36px);font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;color:"+(sl?gc:"#999")+";"+(sl?"animation:wiggle .5s;box-shadow:0 4px 15px "+gc+"44":"box-shadow:0 2px 6px rgba(255,105,180,.08)")+"\">"+c+"</button>";
+    }
+    h+="</div>";
+
+    if(ch){
+      var gc=GC[grp%GC.length];
+      h+="<div style=\"background:rgba(255,255,255,.92);border-radius:24px;padding:16px;box-shadow:0 4px 24px rgba(255,105,180,.12);border:2px solid #FFE4F0;max-width:560px;margin:0 auto 16px;animation:popIn .4s ease-out\">";
+      h+="<div style=\"text-align:center;margin-bottom:12px\">";
+      h+="<div style=\"font-family:'YuKyokasho Yoko','YuKyokasho','Klee One',serif;font-size:clamp(64px,18vw,100px);font-weight:600;line-height:1.1;animation:bounce 2s ease-in-out infinite;color:"+gc+";text-shadow:0 4px 15px "+gc+"33\">"+ch+"</div>";
+      h+="<div style=\"font-size:clamp(18px,5vw,24px);color:#B388FF;font-weight:700;margin-bottom:6px\">"+R[ch]+"</div>";
+      h+="<div style=\"text-align:center\"><span style=\"font-size:clamp(13px,3.5vw,17px);color:#666;background:linear-gradient(135deg,#FFF0F5,#F0E6FF);display:inline-block;padding:8px 18px;border-radius:50px;border:1px solid #FFE4F0;font-weight:700;line-height:1.5\">"+(WD[ch]||ch)+"</span></div>";
+      h+="</div>";
+
+      h+="<div style=\"position:relative;margin-top:14px\">";
+      h+="<div style=\"text-align:center;font-size:14px;color:#C9A0DC;margin:0 0 8px;font-weight:700\">🪄 ゆびで まほうの もじを かこう！</div>";
+      h+="<div style=\"position:relative;max-width:"+CW+"px;margin:0 auto\">";
+      h+="<canvas id=\"dc\" width=\""+CW+"\" height=\""+CW+"\" style=\"width:100%;max-width:"+CW+"px;height:auto;aspect-ratio:1;background:linear-gradient(135deg,#FFF9FC,#FFF5F9);border-radius:20px;border:3px dashed #FFB6D9;touch-action:none;cursor:crosshair;display:block;margin:0 auto\"></canvas>";
+      h+="<button data-clear=\"1\" style=\"position:absolute;top:8px;right:8px;background:rgba(255,255,255,.95);border:2px solid #FFB6D9;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(255,105,180,.2);z-index:10\">🗑️</button>";
+      h+="<div id=\"judgeArea\" style=\"position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;z-index:20;pointer-events:none\"></div>";
+      h+="</div>";
+      h+="</div>";
+
+      // judge button
+      h+="<div style=\"text-align:center;margin-top:12px\">";
+      h+="<button data-judge=\"1\" style=\"padding:14px 32px;border-radius:50px;border:none;background:linear-gradient(135deg,#FFD700,#FFA500);color:#fff;font-size:clamp(16px,4vw,20px);font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 4px 15px rgba(255,215,0,.4);transition:all .2s\">🪄 まほうで チェック！</button>";
+      h+="</div>";
+
+      // pen colors
+      h+="<div style=\"display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;flex-wrap:wrap\">";
+      for(var i=0;i<PCS.length;i++){
+        var c=PCS[i],sl=penCol===c;
+        h+="<div data-pen=\""+i+"\" style=\"width:32px;height:32px;border-radius:50%;cursor:pointer;background:"+c+";border:"+(sl?"3px solid #FFD700":"2px solid #FFE4F0")+";transform:"+(sl?"scale(1.2)":"scale(1)")+";box-shadow:"+(sl?"0 0 8px rgba(255,215,0,.5)":"none")+"\"></div>";
+      }
+      h+="<div style=\"margin-left:8px;display:flex;gap:6px;align-items:center\">";
+      var szs=[4,6,10];
+      for(var i=0;i<szs.length;i++){
+        var s=szs[i],sl=penSz===s;
+        h+="<div data-psz=\""+i+"\" style=\"width:"+(s+20)+"px;height:"+(s+20)+"px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;border:"+(sl?"2px solid #FF69B4":"2px solid #FFE4F0")+";background:"+(sl?"#FFF0F5":"#fff")+"\"><div style=\"width:"+s+"px;height:"+s+"px;border-radius:50%;background:#FF69B4\"></div></div>";
+      }
+      h+="</div></div>";
+      h+="</div>";
+    }
   }
 
-  showScreen('result-screen');
+  h+="<div style=\"text-align:center;padding:16px 0 8px;font-size:12px;color:#DDA0DD;font-weight:700\">👑 プリンセス もじランド 🌸</div>";
+  app.innerHTML=h;
+
+  if(!isQuiz&&ch)setupCanvas();
 }
 
-function retry() {
-  q1Answer = -1;
-  currentSong = '';
-  currentVideoId = '';
-  currentVideoType = '';
-  showScreen('q1');
-}
-
-// ===== SHARE =====
-function getYouTubeUrl() {
-  if (!currentVideoId) return '';
-  if (currentVideoType === 'shorts') {
-    return 'https://www.youtube.com/shorts/' + currentVideoId;
+document.getElementById("app").addEventListener("click",function(e){
+  var t=e.target;
+  while(t&&t!==this){
+    if(t.dataset){
+      if(t.dataset.mode!==undefined){
+        var m=t.dataset.mode;
+        if(m==="quiz"){isQuiz=true;score=0;streak=0;genQuiz();}
+        else{mode=m;isQuiz=false;grp=0;ch=null;}
+        judgeResult=null;if(judgeTimer)clearTimeout(judgeTimer);render();return;
+      }
+      if(t.dataset.grp!==undefined){grp=parseInt(t.dataset.grp);ch=getChars(getGroups()[grp])[0];judgeResult=null;if(judgeTimer)clearTimeout(judgeTimer);render();return;}
+      if(t.dataset.ch!==undefined){var idx=parseInt(t.dataset.ch);ch=getChars(getGroups()[grp])[idx];judgeResult=null;if(judgeTimer)clearTimeout(judgeTimer);render();return;}
+      if(t.dataset.ans!==undefined){
+        if(qRes)return;
+        var a=qOpts[parseInt(t.dataset.ans)];
+        if(a===R[qCh]){qRes="correct";score++;streak++;doConfetti();setTimeout(function(){genQuiz();render();},1400);}
+        else{qRes="wrong";streak=0;render();setTimeout(function(){qRes=null;render();},1000);}
+        return;
+      }
+      if(t.dataset.back!==undefined){isQuiz=false;render();return;}
+      if(t.dataset.clear!==undefined){drawGuide();if(judgeTimer)clearTimeout(judgeTimer);var ja=document.getElementById("judgeArea");if(ja)ja.innerHTML="";return;}
+      if(t.dataset.pen!==undefined){penCol=PCS[parseInt(t.dataset.pen)];render();return;}
+      if(t.dataset.psz!==undefined){penSz=[4,6,10][parseInt(t.dataset.psz)];render();return;}
+      if(t.dataset.judge!==undefined){judgeHandwriting();return;}
+    }
+    t=t.parentElement;
   }
-  return 'https://www.youtube.com/watch?v=' + currentVideoId;
-}
+});
 
-function shareOnX() {
-  const siteUrl = window.location.origin + window.location.pathname;
-  const ytUrl = getYouTubeUrl();
-  let body = '【toybeeファン診断】\nわたしへのおすすめは「' + currentSong + '」でした！\n\nみんなもやってみて🐝\n' + siteUrl + '\n#toybeeファン診断';
-  if (ytUrl) {
-    body += '\n' + ytUrl;
-  }
-  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(body), '_blank');
-  showToast();
-}
-
-function showToast() {
-  const toast = document.getElementById('toast');
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
-}
+if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){render();});}else{render();}
+})();
 </script>
-
 </body>
 </html>
