@@ -461,29 +461,6 @@ body::after {
   margin-top: 0.2rem;
 }
 
-.cta-secondary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.9rem;
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--yellow);
-  background: transparent;
-  border: 2px solid rgba(255,216,20,0.3);
-  border-radius: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.25s ease;
-}
-
-.cta-secondary:hover {
-  border-color: var(--yellow);
-  background: rgba(255,216,20,0.08);
-}
-
 .cta-tertiary {
   display: flex;
   align-items: center;
@@ -521,27 +498,6 @@ body::after {
   font-size: 0.75rem;
   color: rgba(255,255,255,0.8);
   line-height: 1.5;
-}
-
-/* ===== SHARED TOAST ===== */
-.toast {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: var(--yellow);
-  color: var(--black);
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 0.85rem;
-  z-index: 100;
-  transition: transform 0.3s ease;
-  pointer-events: none;
-}
-
-.toast.show {
-  transform: translateX(-50%) translateY(0);
 }
 </style>
 </head>
@@ -592,9 +548,6 @@ body::after {
   </div>
   <div id="video-area"></div>
   <div class="cta-group">
-    <button class="cta-secondary" id="cta-share" onclick="shareOnX()">
-      𝕏 結果をシェア
-    </button>
     <p class="cta-live-lead">この曲が気になったあなたへ 🐝<br><span id="countdown"></span></p>
     <a class="cta-live" href="https://www.liquidroom.net/schedule/toybee_20260322" target="_blank" rel="noopener">
       <span class="cta-live-main">toybeeワンマンライブ開催！</span>
@@ -614,9 +567,6 @@ body::after {
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">シェア画面を開きました！</div>
-
 <script>
 // ===== COUNTDOWN =====
 function updateCountdown() {
@@ -630,7 +580,6 @@ function updateCountdown() {
     el.textContent = 'リキッドワンマン、今日です！！🔥';
   } else {
     el.textContent = '';
-    // Hide live CTA after the event
     var liveLead = document.querySelector('.cta-live-lead');
     var liveBtn = document.querySelector('.cta-live');
     if (liveLead) liveLead.style.display = 'none';
@@ -640,11 +589,7 @@ function updateCountdown() {
 updateCountdown();
 
 // ===== DATA =====
-const SITUATIONS = ['仕事・勉強中', '移動中', 'サボり中', 'まったり中'];
-const MOODS = ['楽しくなりたい！', 'ガンバるぞ！', 'しんみり沁みたい', 'あほになりたい'];
-
 const MATRIX = [
-  // [曲名, YouTube ID, 動画タイプ(mv/shorts/none), linkco.re, コメント1行目, コメント2行目]
   // 💼 仕事・勉強中
   [
     ['TOYROCK -TOYBEEのテーマ-', 'tagYTVlpLRw', 'mv', 'vdbMnTFZ',
@@ -709,9 +654,6 @@ const MATRIX = [
 
 // ===== STATE =====
 let q1Answer = -1;
-let currentSong = '';
-let currentVideoId = '';
-let currentVideoType = '';
 
 // ===== NAVIGATION =====
 function showScreen(id) {
@@ -731,9 +673,6 @@ function selectQ1(idx) {
 
 function selectQ2(idx) {
   const data = MATRIX[q1Answer][idx];
-  currentSong = data[0];
-  currentVideoId = data[1];
-  currentVideoType = data[2];
 
   document.getElementById('result-song').textContent = '「' + data[0] + '」';
   document.getElementById('result-line1').textContent = data[4];
@@ -753,36 +692,7 @@ function selectQ2(idx) {
 
 function retry() {
   q1Answer = -1;
-  currentSong = '';
-  currentVideoId = '';
-  currentVideoType = '';
   showScreen('q1');
-}
-
-// ===== SHARE =====
-function getYouTubeUrl() {
-  if (!currentVideoId) return '';
-  if (currentVideoType === 'shorts') {
-    return 'https://www.youtube.com/shorts/' + currentVideoId;
-  }
-  return 'https://www.youtube.com/watch?v=' + currentVideoId;
-}
-
-function shareOnX() {
-  const siteUrl = window.location.origin + window.location.pathname;
-  const ytUrl = getYouTubeUrl();
-  let body = '【toybeeファン診断】\nわたしへのおすすめは「' + currentSong + '」でした！\n\nみんなもやってみて🐝\n' + siteUrl + '\n#toybeeファン診断';
-  if (ytUrl) {
-    body += '\n' + ytUrl;
-  }
-  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(body), '_blank');
-  showToast();
-}
-
-function showToast() {
-  const toast = document.getElementById('toast');
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
 }
 </script>
 
